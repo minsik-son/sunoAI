@@ -87,15 +87,50 @@ export async function POST(request: Request) {
                 }]
             });
         } else {
-            // 기존 음악 프롬프트 생성 로직 유지
-            const variations = keywords.split('VARIATION').slice(1).map(variation => {
-                const [title, prompt] = variation.split('PROMPT:').map(str => str.trim());
-                return {
-                    title: title.replace(/^\d+\s*TITLE:\s*/, '').trim(),
-                    prompt: prompt.split('\n\n')[0].trim()
-                };
+            // 음악 프롬프트 생성
+            const completion = await openai.chat.completions.create({
+                model: "gpt-3.5-turbo",
+                messages: [{
+                    role: "system",
+                    content: `You are a music prompt generator. Create 5 different variations of music prompts. Format your response exactly as:
+                    1 TITLE: [creative title]
+                    PROMPT: [detailed music prompt]
+
+                    2 TITLE: [creative title]
+                    PROMPT: [detailed music prompt]
+
+                    3 TITLE: [creative title]
+                    PROMPT: [detailed music prompt]
+
+                    4 TITLE: [creative title]
+                    PROMPT: [detailed music prompt]
+
+                    5 TITLE: [creative title]
+                    PROMPT: [detailed music prompt]
+
+                    Each prompt should be unique and incorporate the given elements in different ways.`
+                }, {
+                    role: "user",
+                    content: `Create 5 music prompts using these elements: ${keywords}`
+                }],
+                max_tokens: 1000,  // 토큰 수 증가
+                temperature: 0.8
             });
+
+            const response = completion.choices[0].message.content || '';
             
+            // 응답을 변형하여 variations 배열 생성
+            const variations = response.split(/\d+\s+TITLE:/)
+                .filter(Boolean)
+                .map(variation => {
+                    const [title, ...promptParts] = variation.split('PROMPT:');
+                    return {
+                        title: title.trim(),
+                        prompt: promptParts.join('PROMPT:').trim()
+                    };
+                })
+                .slice(0, 5);  // 최대 5개로 제한
+
             return NextResponse.json({ variations });
         }
     } catch (error) {

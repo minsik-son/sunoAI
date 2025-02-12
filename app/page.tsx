@@ -119,11 +119,17 @@ export default function Page() {
         }
     };
 
-    // 버튼 활성화 여부를 확인하는 함수 추가
+    // 탭 변경 핸들러 수정
+    const handleTabChange = (tab: string) => {
+        setActiveTab(tab);
+        setGeneratedPrompts([]); // 탭 변경 시 결과 초기화
+        setPrompt(''); // 입력값도 초기화
+    };
+
     const isGenerateDisabled = () => {
         if (activeTab === 'song') {
-            // song 탭에서는 description이나 다른 옵션들 중 하나라도 있으면 활성화
-            return !prompt && !Object.values(options).some(value => value && value.length > 0);
+            // song 탭에서는 description이 있으면 활성화 (다른 옵션들은 선택사항)
+            return !prompt.trim();
         } else {
             // lyrics 탭에서는 theme과 language가 필수
             return !lyricsOptions.theme || !lyricsOptions.language;
@@ -147,35 +153,23 @@ export default function Page() {
                 data-oid=":-3qkmv"
             >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" data-oid="fu3ddcb">
-                    <div className="flex justify-between h-16 items-center" data-oid="4ylj6vl">
-                        <span className="text-2xl font-light" data-oid="1xi6p7x">
+                    <div className="flex justify-between h-16 items-center">
+                        <span className="text-2xl font-light">
                             harmonia.ai
                         </span>
-                        <div className="flex space-x-8" data-oid="gs.scx1">
-                            <button
+                        <div className="flex space-x-8">
+                            <a
+                                href="/about"
                                 className="text-sm font-light hover:text-gray-600 transition-colors"
-                                data-oid="6ce.npu"
                             >
                                 About
-                            </button>
-                            <button
-                                className="text-sm font-light hover:text-gray-600 transition-colors"
-                                data-oid="v77d2x2"
-                            >
-                                Examples
-                            </button>
-                            <button
-                                className="text-sm font-light hover:text-gray-600 transition-colors"
-                                data-oid="o3uj1h4"
-                            >
-                                Pricing
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </div>
             </nav>
 
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12" data-oid="7.mc683">
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pb-[120px]">
                 <h1 className="text-5xl font-light text-center mb-4" data-oid="h5azvzr">
                     Create Music with AI
                 </h1>
@@ -185,7 +179,7 @@ export default function Page() {
 
                 <div className="flex justify-center space-x-4 mb-8">
                     <button
-                        onClick={() => setActiveTab('song')}
+                        onClick={() => handleTabChange('song')}
                         className={`px-6 py-2 rounded-full text-sm transition-all ${
                             activeTab === 'song' ? 'bg-black text-white' : 'bg-white'
                         }`}
@@ -193,7 +187,7 @@ export default function Page() {
                         Song Generator
                     </button>
                     <button
-                        onClick={() => setActiveTab('lyrics')}
+                        onClick={() => handleTabChange('lyrics')}
                         className={`px-6 py-2 rounded-full text-sm transition-all ${
                             activeTab === 'lyrics' ? 'bg-black text-white' : 'bg-white'
                         }`}
@@ -632,45 +626,6 @@ export default function Page() {
                         </div>
                     )
                 )}
-
-                <div className="text-center space-y-4" data-oid="2au7:xz">
-                    <h2 className="text-2xl font-light" data-oid="lyv02wl">
-                        Recent Generations
-                    </h2>
-                    <div className="grid grid-cols-3 gap-6" data-oid="-z8xb1d">
-                        {[1, 2, 3].map((item) => (
-                            <div
-                                key={item}
-                                className="bg-white/70 backdrop-blur-sm rounded-xl p-6 hover:shadow-md transition-all cursor-pointer border border-gray-100 hover:bg-white/80"
-                                data-oid="9:0kdas"
-                            >
-                                <div
-                                    className="w-12 h-12 bg-black rounded-full mx-auto mb-4 flex items-center justify-center"
-                                    data-oid="dyl2w10"
-                                >
-                                    <svg
-                                        className="w-6 h-6 text-white"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                        data-oid="f2j6-6-"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth={2}
-                                            d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"
-                                            data-oid="crerbbe"
-                                        />
-                                    </svg>
-                                </div>
-                                <p className="text-sm text-gray-500 font-light" data-oid="g.:x2b2">
-                                    Generated Song #{item}
-                                </p>
-                            </div>
-                        ))}
-                    </div>
-                </div>
             </main>
 
             {/* 하단 고정 광고 */}

@@ -1,27 +1,13 @@
 'use client';
 
-import { useEffect } from 'react';
-
 export default function InlineAd() {
-    useEffect(() => {
-        try {
-            // @ts-ignore
-            (window.adsbygoogle = window.adsbygoogle || []).push({});
-        } catch (err) {
-            console.error('AdSense error:', err);
-        }
-    }, []);
-
     return (
-        <div className="w-full my-8 flex justify-center">
-            <ins
-                className="adsbygoogle"
-                style={{ display: 'block' }}
-                data-ad-client="YOUR-AD-CLIENT-ID"
-                data-ad-slot="YOUR-AD-SLOT-ID"
-                data-ad-format="auto"
-                data-full-width-responsive="true"
-            />
+        <div className="w-full my-8">
+            <div className="max-w-3xl mx-auto h-[250px] bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center">
+                <div className="text-gray-400 text-sm">
+                    Advertisement Area (728x90 or 300x250)
+                </div>
+            </div>
         </div>
     );
 } 
