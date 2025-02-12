@@ -56,22 +56,28 @@ export class SunoPromptBuilder {
         return result;
     }
 
-    static buildLyricsPrompt(options: LyricsOptions): string {
-        const parts: string[] = [];
+    static buildLyricsPrompt(params: LyricsOptions): string {
+        const metaTags: string[] = [];
         
-        // 구조 추가
-        if (options.structure.length) {
-            parts.push(options.structure.map(section => `[${section}]`).join(' '));
-        }
+        // 기본 메타 태그 추가
+        if (params.language) metaTags.push(`[Language: ${params.language}]`);
+        if (params.theme) metaTags.push(`[Theme: ${params.theme}]`);
+        if (params.vocalStyle) metaTags.push(`[Vocal: ${params.vocalStyle}]`);
+        if (params.style) metaTags.push(`[Style: ${params.style}]`);
+        if (params.songLength) metaTags.push(`[Length: ${params.songLength}]`);
         
-        // 메타 정보 추가
-        if (options.theme) parts.push(`Theme: ${options.theme}`);
-        if (options.style) parts.push(`Style: ${options.style}`);
-        if (options.language) parts.push(`Language: ${options.language}`);
-        if (options.mood) parts.push(`Mood: ${options.mood}`);
-        if (options.genre) parts.push(`Genre: ${options.genre}`);
+        // 구조 관련 태그
+        if (params.structure) metaTags.push(`[Structure: ${params.structure}]`);
+        if (params.repetition) metaTags.push(`[Repetition: ${params.repetition}]`);
         
-        return parts.join(', ');
+        // 세부 스타일 태그
+        if (params.rhymePattern) metaTags.push(`[Rhyme: ${params.rhymePattern}]`);
+        if (params.metaphorLevel) metaTags.push(`[Metaphor: ${params.metaphorLevel}]`);
+
+        // 메타 태그를 한 줄로 결합
+        const metaTagsString = metaTags.join(' ');
+
+        return metaTagsString;
     }
 
     static parseDescription(description: string): Partial<PromptOptions> {

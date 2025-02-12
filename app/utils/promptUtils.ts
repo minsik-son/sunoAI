@@ -48,23 +48,89 @@ export const LYRICS_STYLES = [
 ] as const;
 
 export const VOCAL_ARRANGEMENTS = [
-    'Solo (Single vocalist)',
-    'Duet (Two vocalists)',
-    'Choir/Chorus (Large group)',
-    'A Cappella (Voices only)',
-    'Call and Response',
-    'Harmony Singing',
-    'Unison (Multiple voices same melody)',
-    'Lead and Backing Vocals',
-    'Group Singing (Small ensemble)',
-    'Verse Trading (Alternating vocalists)',
-    'Round/Canon Style',
-    // 추가적인 옵션들
+    'Solo Vocal',
+    'Duet',
+    'Group Chorus',
+    'A Cappella',
+    'Call & Response',
+    'Harmonized',
+    'Unison Vocals',
+    'Lead & Background',
+    'Small Group',
+    'Alternating Vocals',
+    'Round Style',
     'Layered Vocals',
-    'Spoken Word with Backing Vocals',
-    'Vocal Percussion (Beatboxing)',
-    'Multi-Part Harmony'
-];
+    'Spoken Word',
+    'Vocal Effects',
+    'Multi-Voice Harmony'
+] as const;
+
+export const LYRICS_STRUCTURES = [
+    'Verse - Chorus - Verse - Bridge - Chorus',
+    'Verse - Pre-Chorus - Chorus - Verse - Bridge - Chorus',
+    'Intro - Verse - Chorus - Verse - Chorus - Outro',
+    'Verse - Chorus - Verse - Chorus - Bridge - Chorus',
+    'Verse - Verse - Bridge - Chorus - Outro',
+    'Intro - Verse - Chorus - Bridge - Chorus - Outro'
+] as const;
+
+export const REPETITION_STYLES = [
+    'High Chorus Repetition',
+    'Moderate Repetition',
+    'Minimal Repetition',
+    'Strategic Hook Repetition',
+    'Thematic Phrase Repetition'
+] as const;
+
+export const RHYME_PATTERNS = [
+    'Strong End Rhymes',
+    'Internal Rhyme Scheme',
+    'Conversational Flow',
+    'Loose Rhyme Pattern',
+    'Complex Rhyme Structure',
+    'Free Verse Style'
+] as const;
+
+export const METAPHOR_LEVELS = [
+    'Highly Metaphoric',
+    'Balanced Metaphors',
+    'Direct and Clear',
+    'Subtle Symbolism',
+    'Mixed (Metaphoric & Direct)',
+    'Abstract Imagery'
+] as const;
+
+export const THEMES = [
+    'Love & Romance',
+    'Heartbreak & Loss',
+    'Personal Growth',
+    'Social Issues',
+    'Nature & Environment',
+    'Life & Death',
+    'Dreams & Aspirations',
+    'Friendship & Unity',
+    'Nostalgia & Memories',
+    'Hope & Inspiration',
+    'Struggle & Resilience',
+    'Joy & Celebration',
+    'Faith & Spirituality',
+    'Time & Change',
+    'Freedom & Independence'
+] as const;
+
+export const SONG_LENGTHS = [
+    '60 seconds (1:00)',
+    '90 seconds (1:30)',
+    '120 seconds (2:00)',
+    '150 seconds (2:30)',
+    '180 seconds (3:00)',
+    '210 seconds (3:30)',
+    '240 seconds (4:00)',
+    '270 seconds (4:30)',
+    '300 seconds (5:00)',
+    '330 seconds (5:30)',
+    '360 seconds (6:00)'
+] as const;
 
 export function parseDescription(description: string): InferredParams {
     const params: InferredParams = {};

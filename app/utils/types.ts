@@ -10,9 +10,13 @@ export interface PromptOptions {
 }
 
 export interface LyricsOptions {
-    vocalArrangement?: string;
+    vocalStyle?: string;
     style?: string;
     language?: string;
-    structure?: string[];
+    structure?: string;
+    repetition?: string;
+    rhymePattern?: string;
+    metaphorLevel?: string;
     theme?: string;
+    songLength?: string;
 } 

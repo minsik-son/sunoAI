@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { LYRICS_SECTIONS, LYRICS_STYLES, VOCAL_ARRANGEMENTS } from './utils/promptUtils';
+import { LYRICS_SECTIONS, LYRICS_STYLES, VOCAL_ARRANGEMENTS, LYRICS_STRUCTURES, REPETITION_STYLES, RHYME_PATTERNS, METAPHOR_LEVELS, THEMES, SONG_LENGTHS } from './utils/promptUtils';
 import { SunoAPI } from './utils/api';
 import { SunoPromptBuilder } from './utils/sunoPromptBuilder';
 import type { PromptOptions, LyricsOptions } from './utils/types';
@@ -51,17 +51,25 @@ export default function Page() {
         
         try {
             if (activeTab === 'lyrics') {
-                const inferredParams = SunoPromptBuilder.parseLyricsDescription(prompt);
+                // 모든 lyrics 옵션을 포함하여 프롬프트 생성
                 const finalParams = {
                     ...lyricsOptions,
-                    ...inferredParams,
-                    theme: prompt
+                    theme: lyricsOptions.theme || prompt // theme이 없으면 prompt를 theme으로 사용
                 };
-                const generatedPrompt = SunoPromptBuilder.buildLyricsPrompt(finalParams);
-                setGeneratedPrompts([{
-                    title: `${finalParams.style || 'Custom'} Lyrics - ${finalParams.language || 'Multi'} Language`,
-                    prompt: generatedPrompt
-                }]);
+
+                const promptTemplate = SunoPromptBuilder.buildLyricsPrompt(finalParams);
+                
+                // GPT에 프롬프트 전달
+                const response = await SunoAPI.generatePromptWithGPT(promptTemplate);
+                const data = await response.json();
+                
+                // 생성된 가사에 메타 태그 추가
+                const variations = data.variations.map(item => ({
+                    title: `${finalParams.language || 'Multi'} Language ${finalParams.style || ''} Lyrics`,
+                    prompt: `${promptTemplate}\n\n${item.prompt}` // 메타 태그와 가사 결합
+                }));
+
+                setGeneratedPrompts(variations);
             } else {
                 const inferredParams = SunoPromptBuilder.parseDescription(prompt);
                 const finalParams = {
@@ -114,9 +122,8 @@ export default function Page() {
             // song 탭에서는 description이나 다른 옵션들 중 하나라도 있으면 활성화
             return !prompt && !Object.values(options).some(value => value && value.length > 0);
         } else {
-            // lyrics 탭에서는 structure나 다른 옵션들이 있어야 활성화
-            return lyricsOptions.structure.length === 0 && 
-                   !Object.values(lyricsOptions).some(value => value && typeof value === 'string' && value.length > 0);
+            // lyrics 탭에서는 theme과 language가 필수
+            return !lyricsOptions.theme || !lyricsOptions.language;
         }
     };
 
@@ -370,37 +377,27 @@ export default function Page() {
                             <div className="space-y-6">
                                 <div className="grid grid-cols-2 gap-8">
                                     <div>
-                                        <span className="text-sm font-light text-gray-700 mb-2 block">Vocal Arrangement</span>
+                                        <span className="text-sm font-light text-gray-700 mb-2 block">
+                                            Theme <span className="text-red-500">*</span>
+                                        </span>
                                         <select
-                                            className={selectClass}
-                                            onChange={(e) => handleLyricsOptionChange('vocalArrangement', e.target.value)}
-                                            value={lyricsOptions.vocalArrangement || ''}
+                                            className={`${selectClass} ${!lyricsOptions.theme ? 'border-red-200' : ''}`}
+                                            onChange={(e) => handleLyricsOptionChange('theme', e.target.value)}
+                                            value={lyricsOptions.theme || ''}
                                         >
-                                            <option value="">Select Vocal Arrangement</option>
-                                            {VOCAL_ARRANGEMENTS.map(arrangement => (
-                                                <option key={arrangement} value={arrangement}>{arrangement}</option>
+                                            <option value="">Select Theme</option>
+                                            {THEMES.map(theme => (
+                                                <option key={theme} value={theme}>{theme}</option>
                                             ))}
                                         </select>
                                     </div>
-                                    
+
                                     <div>
-                                        <span className="text-sm font-light text-gray-700 mb-2 block">Lyrics Style</span>
+                                        <span className="text-sm font-light text-gray-700 mb-2 block">
+                                            Language <span className="text-red-500">*</span>
+                                        </span>
                                         <select
-                                            className={selectClass}
-                                            onChange={(e) => handleLyricsOptionChange('style', e.target.value)}
-                                            value={lyricsOptions.style || ''}
-                                        >
-                                            <option value="">Select Style</option>
-                                            {LYRICS_STYLES.map(style => (
-                                                <option key={style} value={style}>{style}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                    
-                                    <div>
-                                        <span className="text-sm font-light text-gray-700 mb-2 block">Language</span>
-                                        <select
-                                            className={selectClass}
+                                            className={`${selectClass} ${!lyricsOptions.language ? 'border-red-200' : ''}`}
                                             onChange={(e) => handleLyricsOptionChange('language', e.target.value)}
                                             value={lyricsOptions.language || ''}
                                         >
@@ -418,6 +415,104 @@ export default function Page() {
                                             <option value="Arabic">Arabic (العربية)</option>
                                             <option value="Polish">Polish (Polski)</option>
                                             <option value="Turkish">Turkish (Türkçe)</option>
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <span className="text-sm font-light text-gray-700 mb-2 block">Vocal Style</span>
+                                        <select
+                                            className={selectClass}
+                                            onChange={(e) => handleLyricsOptionChange('vocalStyle', e.target.value)}
+                                            value={lyricsOptions.vocalStyle || ''}
+                                        >
+                                            <option value="">Select Vocal Style</option>
+                                            {VOCAL_ARRANGEMENTS.map(style => (
+                                                <option key={style} value={style}>{style}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <span className="text-sm font-light text-gray-700 mb-2 block">Lyrics Style</span>
+                                        <select
+                                            className={selectClass}
+                                            onChange={(e) => handleLyricsOptionChange('style', e.target.value)}
+                                            value={lyricsOptions.style || ''}
+                                        >
+                                            <option value="">Select Style</option>
+                                            {LYRICS_STYLES.map(style => (
+                                                <option key={style} value={style}>{style}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <span className="text-sm font-light text-gray-700 mb-2 block">Song Structure</span>
+                                        <select
+                                            className={selectClass}
+                                            onChange={(e) => handleLyricsOptionChange('structure', e.target.value)}
+                                            value={lyricsOptions.structure || ''}
+                                        >
+                                            <option value="">Select Structure</option>
+                                            {LYRICS_STRUCTURES.map(structure => (
+                                                <option key={structure} value={structure}>{structure}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <span className="text-sm font-light text-gray-700 mb-2 block">Repetition Style</span>
+                                        <select
+                                            className={selectClass}
+                                            onChange={(e) => handleLyricsOptionChange('repetition', e.target.value)}
+                                            value={lyricsOptions.repetition || ''}
+                                        >
+                                            <option value="">Select Repetition Style</option>
+                                            {REPETITION_STYLES.map(style => (
+                                                <option key={style} value={style}>{style}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <span className="text-sm font-light text-gray-700 mb-2 block">Rhyme Pattern</span>
+                                        <select
+                                            className={selectClass}
+                                            onChange={(e) => handleLyricsOptionChange('rhymePattern', e.target.value)}
+                                            value={lyricsOptions.rhymePattern || ''}
+                                        >
+                                            <option value="">Select Rhyme Pattern</option>
+                                            {RHYME_PATTERNS.map(pattern => (
+                                                <option key={pattern} value={pattern}>{pattern}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <span className="text-sm font-light text-gray-700 mb-2 block">Metaphor Level</span>
+                                        <select
+                                            className={selectClass}
+                                            onChange={(e) => handleLyricsOptionChange('metaphorLevel', e.target.value)}
+                                            value={lyricsOptions.metaphorLevel || ''}
+                                        >
+                                            <option value="">Select Metaphor Level</option>
+                                            {METAPHOR_LEVELS.map(level => (
+                                                <option key={level} value={level}>{level}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                    <div>
+                                        <span className="text-sm font-light text-gray-700 mb-2 block">Song Length</span>
+                                        <select
+                                            className={selectClass}
+                                            onChange={(e) => handleLyricsOptionChange('songLength', e.target.value)}
+                                            value={lyricsOptions.songLength || ''}
+                                        >
+                                            <option value="">Select Length</option>
+                                            {SONG_LENGTHS.map(length => (
+                                                <option key={length} value={length}>{length}</option>
+                                            ))}
                                         </select>
                                     </div>
                                 </div>
@@ -523,7 +618,9 @@ export default function Page() {
                                             )}
                                         </button>
                                     </div>
-                                    <p className="text-gray-700">{item.prompt}</p>
+                                    <p className="text-gray-700" dangerouslySetInnerHTML={{ 
+                                        __html: item.prompt.replace(/\n/g, '<br>') 
+                                    }} />
                                 </div>
                             ))}
                         </div>
