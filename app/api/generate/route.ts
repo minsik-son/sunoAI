@@ -27,7 +27,7 @@ export async function POST(request: Request) {
                [Dynamic: Building]
                lyrics here...`;
 
-            // 가사 생성
+            // 1. 먼저 가사 생성
             const lyricsCompletion = await openai.chat.completions.create({
                 model: "gpt-3.5-turbo",
                 messages: [{
@@ -48,19 +48,33 @@ export async function POST(request: Request) {
                 temperature: 0.8
             });
 
-            // 가사 내용을 기반으로 제목 생성
+            // 2. 생성된 가사에서 언어 확인
+            const lyrics = lyricsCompletion.choices[0].message.content;
+            const languageMatch = lyrics.match(/\[Language:\s*([^\]]+)\]/);
+            const language = languageMatch ? languageMatch[1].trim() : 'English';
+
+            // 3. 언어별 제목 생성 예시 준비
+            const titleExamples: { [key: string]: string } = {
+                'Korean': '(e.g., "별빛 아래 우리의 약속", "마지막 춤", "사랑의 노래")',
+                'English': '(e.g., "Moonlit Promises", "Dancing in Starlight", "Eternal Love")',
+                'Japanese': '(e.g., "月明かりの約束", "最後のダンス", "永遠の愛")',
+                'Chinese': '(e.g., "月光下的约定", "最后的舞蹈", "永恒的爱")',
+                'Spanish': '(e.g., "Promesas Bajo la Luna", "Último Baile", "Amor Eterno")',
+                'French': '(e.g., "Promesses au Clair de Lune", "Dernière Danse", "Amour Éternel")',
+                // ... 다른 언어들에 대한 예시도 추가 가능
+            };
+
+            // 4. 가사 내용을 기반으로 제목 생성
+            const titleContext = lyrics.split('\n').slice(0, 10).join('\n'); // 첫 10줄만 사용
+
             const titleCompletion = await openai.chat.completions.create({
                 model: "gpt-3.5-turbo",
                 messages: [{
                     role: "system",
-                    content: `You are a creative song title generator. Create a single poetic title that captures the essence of the lyrics:
-                    1. For Korean lyrics, create a Korean title (e.g., "별빛 아래 우리의 약속", "마지막 춤")
-                    2. For English lyrics, create an English title (e.g., "Moonlit Promises", "Dancing in Starlight")
-                    3. Make it short, memorable, and related to the lyrics' theme
-                    4. Return ONLY the title, no additional text or formatting`
+                    content: `Create a ${language} title ${titleExamples[language] || ''} based on these lyrics.`
                 }, {
                     role: "user",
-                    content: `Create a title for these lyrics: ${lyricsCompletion.choices[0].message.content}`
+                    content: titleContext // 전체 가사 대신 일부만 전달
                 }],
                 max_tokens: 50,
                 temperature: 0.8
@@ -69,7 +83,7 @@ export async function POST(request: Request) {
             return NextResponse.json({ 
                 variations: [{
                     title: titleCompletion.choices[0].message.content,
-                    prompt: lyricsCompletion.choices[0].message.content
+                    prompt: lyrics
                 }]
             });
         } else {

@@ -5,6 +5,8 @@ import { LYRICS_SECTIONS, LYRICS_STYLES, VOCAL_ARRANGEMENTS, LYRICS_STRUCTURES, 
 import { SunoAPI } from './utils/api';
 import { SunoPromptBuilder } from './utils/sunoPromptBuilder';
 import type { PromptOptions, LyricsOptions } from './utils/types';
+import InlineAd from './components/ads/InlineAd';
+import FixedBottomAd from './components/ads/FixedBottomAd';
 
 // 타입 정의 추가
 interface GeneratedItem {
@@ -22,6 +24,7 @@ export default function Page() {
         structure: []
     });
     const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+    const [isSubscriber, setIsSubscriber] = useState(false);  // 구독 상태 추가
 
     const handleOptionChange = (key: keyof PromptOptions, value: string | string[]) => {
         setOptions(prev => ({
@@ -65,8 +68,8 @@ export default function Page() {
                 
                 // 생성된 가사에 메타 태그 추가
                 const variations = data.variations.map(item => ({
-                    title: `${finalParams.language || 'Multi'} Language ${finalParams.style || ''} Lyrics`,
-                    prompt: `${promptTemplate}\n\n${item.prompt}` // 메타 태그와 가사 결합
+                    title: item.title,
+                    prompt: item.prompt
                 }));
 
                 setGeneratedPrompts(variations);
@@ -547,6 +550,9 @@ export default function Page() {
                     </div>
                 </div>
 
+                {/* Generate 버튼과 결과 섹션 사이에 광고 삽입 */}
+                {!isSubscriber && <InlineAd />}
+
                 {isGenerating ? (
                     <div
                         className="max-w-3xl mx-auto mb-12 bg-white/70 backdrop-blur-sm rounded-2xl p-8 border border-gray-100 space-y-6"
@@ -666,6 +672,9 @@ export default function Page() {
                     </div>
                 </div>
             </main>
+
+            {/* 하단 고정 광고 */}
+            {!isSubscriber && <FixedBottomAd />}
         </div>
     );
 }
