@@ -80,11 +80,15 @@ export default function AboutPage() {
                                 Start Generating
                             </a>
                         </div>
+                        <p className="text-center text-gray-500 mt-4">
+                            If you find any bugs or have suggestions for improvements, please report them to <a href="mailto:aiprmpt@gmail.com" className="text-blue-500 underline">aiprmpt@gmail.com</a>.
+                        </p>
                     </main>
 
                     {/* Aside Advertisement */}
                     <aside className="w-[300px] hidden lg:block">
                         <div className="sticky top-8">
+                            {/* 
                             <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-4 border border-gray-100">
                                 <div className="h-[600px] bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center">
                                     <div className="text-gray-400 text-sm">
@@ -92,6 +96,7 @@ export default function AboutPage() {
                                     </div>
                                 </div>
                             </div>
+                            */}
                         </div>
                     </aside>
                 </div>

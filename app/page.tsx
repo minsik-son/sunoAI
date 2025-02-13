@@ -21,7 +21,9 @@ export default function Page() {
     const [options, setOptions] = useState<PromptOptions>({});
     const [generatedPrompts, setGeneratedPrompts] = useState<GeneratedItem[]>([]);
     const [lyricsOptions, setLyricsOptions] = useState<LyricsOptions>({
-        structure: []
+        structure: [],
+        theme: '',
+        language: ''
     });
     const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
     const [isSubscriber, setIsSubscriber] = useState(false);  // 구독 상태 추가
@@ -99,8 +101,13 @@ export default function Page() {
         }
     };
 
-    // select 요소들의 공통 클래스 수정
-    const selectClass = `mt-1 block w-[200px] rounded-lg border-2 border-gray-200 bg-white shadow-sm 
+    // Song Generator용 selectClass - 더 짧은 너비
+    const songSelectClass = `mt-1 block w-[300px] rounded-lg border-2 border-gray-200 bg-white shadow-sm 
+    focus:border-black focus:ring-1 focus:ring-black transition-colors cursor-pointer
+    [&>*]:py-2 [&>*]:px-4 [&>*]:bg-white hover:[&>*]:bg-gray-50/50`;
+
+    // Lyrics Generator용 selectClass - 기존 너비 유지
+    const lyricsSelectClass = `mt-1 block w-[400px] rounded-lg border-2 border-gray-200 bg-white shadow-sm 
     focus:border-black focus:ring-1 focus:ring-black transition-colors cursor-pointer
     [&>*]:py-2 [&>*]:px-4 [&>*]:bg-white hover:[&>*]:bg-gray-50/50`;
 
@@ -128,8 +135,8 @@ export default function Page() {
 
     const isGenerateDisabled = () => {
         if (activeTab === 'song') {
-            // song 탭에서는 description이 있으면 활성화 (다른 옵션들은 선택사항)
-            return !prompt.trim();
+            // song 탭에서는 description이 있거나 genre가 선택되면 활성화
+            return !prompt.trim() && !options.genre;
         } else {
             // lyrics 탭에서는 theme과 language가 필수
             return !lyricsOptions.theme || !lyricsOptions.language;
@@ -171,10 +178,10 @@ export default function Page() {
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pb-[120px]">
                 <h1 className="text-5xl font-light text-center mb-4" data-oid="h5azvzr">
-                    Create Music with AI
+                    Create Suno Prompts with AI
                 </h1>
                 <p className="text-gray-500 text-center mb-8 font-light" data-oid="c-8imqs">
-                    Transform your ideas into beautiful songs with our AI-powered music generator
+                    Transform your ideas into beautiful songs with our AI-powered Suno Prompts generator
                 </p>
 
                 <div className="flex justify-center space-x-4 mb-8">
@@ -205,6 +212,9 @@ export default function Page() {
                             onChange={(e) => setPrompt(e.target.value)}
                             data-oid="ynellg8"
                         />
+                        <p className="text-sm text-gray-500 mt-4 text-center">
+                            Please describe your desired song or make a simple selection from the dropdown below.
+                        </p>
                     </div>
                 )}
 
@@ -215,11 +225,11 @@ export default function Page() {
                     <div className="space-y-6" data-oid="l82mya2">
                         {activeTab === 'song' && (
                             <div className="max-w-3xl mx-auto">
-                                <div className="grid grid-cols-2 gap-x-16 gap-y-4">
+                                <div className="grid grid-cols-2 gap-x-8 justify-items-center">
                                     <div>
                                         <span className="text-sm font-light text-gray-700">Genre</span>
                                         <select
-                                            className={selectClass}
+                                            className={songSelectClass}
                                             onChange={(e) => handleOptionChange('genre', e.target.value)}
                                             value={options.genre || ''}
                                         >
@@ -266,7 +276,7 @@ export default function Page() {
                                     <div>
                                         <span className="text-sm font-light text-gray-700">Instruments</span>
                                         <select
-                                            className={selectClass}
+                                            className={songSelectClass}
                                             onChange={(e) => handleOptionChange('instruments', e.target.value)}
                                             value={options.instruments || ''}
                                         >
@@ -288,7 +298,7 @@ export default function Page() {
                                     <div>
                                         <span className="text-sm font-light text-gray-700">Mood</span>
                                         <select
-                                            className={selectClass}
+                                            className={songSelectClass}
                                             onChange={(e) => handleOptionChange('mood', e.target.value)}
                                             value={options.mood || ''}
                                         >
@@ -309,7 +319,7 @@ export default function Page() {
                                     <div>
                                         <span className="text-sm font-light text-gray-700">Tempo</span>
                                         <select
-                                            className={selectClass}
+                                            className={songSelectClass}
                                             onChange={(e) => handleOptionChange('tempo', e.target.value)}
                                             value={options.tempo || ''}
                                         >
@@ -330,7 +340,7 @@ export default function Page() {
                                     <div>
                                         <span className="text-sm font-light text-gray-700">Vocal Type</span>
                                         <select
-                                            className={selectClass}
+                                            className={songSelectClass}
                                             onChange={(e) => handleOptionChange('vocalType', e.target.value)}
                                             value={options.vocalType || ''}
                                         >
@@ -350,7 +360,7 @@ export default function Page() {
                                     <div>
                                         <span className="text-sm font-light text-gray-700">Sound Effects</span>
                                         <select
-                                            className={selectClass}
+                                            className={songSelectClass}
                                             onChange={(e) => handleOptionChange('soundEffects', e.target.value)}
                                             value={options.soundEffects || ''}
                                         >
@@ -372,13 +382,11 @@ export default function Page() {
 
                         {activeTab === 'lyrics' && (
                             <div className="space-y-6">
-                                <div className="grid grid-cols-2 gap-8">
+                                <div className="grid grid-cols-2 gap-x-4 justify-items-center">
                                     <div>
-                                        <span className="text-sm font-light text-gray-700 mb-2 block">
-                                            Theme <span className="text-red-500">*</span>
-                                        </span>
+                                        <span className="text-sm font-light text-gray-700 mb-2 block">Theme</span>
                                         <select
-                                            className={`${selectClass} ${!lyricsOptions.theme ? 'border-red-200' : ''}`}
+                                            className={lyricsSelectClass}
                                             onChange={(e) => handleLyricsOptionChange('theme', e.target.value)}
                                             value={lyricsOptions.theme || ''}
                                         >
@@ -388,13 +396,10 @@ export default function Page() {
                                             ))}
                                         </select>
                                     </div>
-
                                     <div>
-                                        <span className="text-sm font-light text-gray-700 mb-2 block">
-                                            Language <span className="text-red-500">*</span>
-                                        </span>
+                                        <span className="text-sm font-light text-gray-700 mb-2 block">Language</span>
                                         <select
-                                            className={`${selectClass} ${!lyricsOptions.language ? 'border-red-200' : ''}`}
+                                            className={lyricsSelectClass}
                                             onChange={(e) => handleLyricsOptionChange('language', e.target.value)}
                                             value={lyricsOptions.language || ''}
                                         >
@@ -414,11 +419,10 @@ export default function Page() {
                                             <option value="Turkish">Turkish (Türkçe)</option>
                                         </select>
                                     </div>
-
-                                    <div>
+                                    <div className="mb-1">
                                         <span className="text-sm font-light text-gray-700 mb-2 block">Vocal Style</span>
                                         <select
-                                            className={selectClass}
+                                            className={lyricsSelectClass}
                                             onChange={(e) => handleLyricsOptionChange('vocalStyle', e.target.value)}
                                             value={lyricsOptions.vocalStyle || ''}
                                         >
@@ -428,11 +432,10 @@ export default function Page() {
                                             ))}
                                         </select>
                                     </div>
-
-                                    <div>
+                                    <div className="mb-1">
                                         <span className="text-sm font-light text-gray-700 mb-2 block">Lyrics Style</span>
                                         <select
-                                            className={selectClass}
+                                            className={lyricsSelectClass}
                                             onChange={(e) => handleLyricsOptionChange('style', e.target.value)}
                                             value={lyricsOptions.style || ''}
                                         >
@@ -442,11 +445,10 @@ export default function Page() {
                                             ))}
                                         </select>
                                     </div>
-
-                                    <div>
+                                    <div className="mb-1">
                                         <span className="text-sm font-light text-gray-700 mb-2 block">Song Structure</span>
                                         <select
-                                            className={selectClass}
+                                            className={lyricsSelectClass}
                                             onChange={(e) => handleLyricsOptionChange('structure', e.target.value)}
                                             value={lyricsOptions.structure || ''}
                                         >
@@ -456,11 +458,10 @@ export default function Page() {
                                             ))}
                                         </select>
                                     </div>
-
-                                    <div>
+                                    <div className="mb-1">
                                         <span className="text-sm font-light text-gray-700 mb-2 block">Repetition Style</span>
                                         <select
-                                            className={selectClass}
+                                            className={lyricsSelectClass}
                                             onChange={(e) => handleLyricsOptionChange('repetition', e.target.value)}
                                             value={lyricsOptions.repetition || ''}
                                         >
@@ -470,11 +471,10 @@ export default function Page() {
                                             ))}
                                         </select>
                                     </div>
-
-                                    <div>
+                                    <div className="mb-1">
                                         <span className="text-sm font-light text-gray-700 mb-2 block">Rhyme Pattern</span>
                                         <select
-                                            className={selectClass}
+                                            className={lyricsSelectClass}
                                             onChange={(e) => handleLyricsOptionChange('rhymePattern', e.target.value)}
                                             value={lyricsOptions.rhymePattern || ''}
                                         >
@@ -484,11 +484,10 @@ export default function Page() {
                                             ))}
                                         </select>
                                     </div>
-
-                                    <div>
+                                    <div className="mb-1">
                                         <span className="text-sm font-light text-gray-700 mb-2 block">Metaphor Level</span>
                                         <select
-                                            className={selectClass}
+                                            className={lyricsSelectClass}
                                             onChange={(e) => handleLyricsOptionChange('metaphorLevel', e.target.value)}
                                             value={lyricsOptions.metaphorLevel || ''}
                                         >
@@ -498,11 +497,10 @@ export default function Page() {
                                             ))}
                                         </select>
                                     </div>
-
-                                    <div>
+                                    <div className="mb-1">
                                         <span className="text-sm font-light text-gray-700 mb-2 block">Song Length</span>
                                         <select
-                                            className={selectClass}
+                                            className={lyricsSelectClass}
                                             onChange={(e) => handleLyricsOptionChange('songLength', e.target.value)}
                                             value={lyricsOptions.songLength || ''}
                                         >
@@ -514,14 +512,16 @@ export default function Page() {
                                     </div>
                                 </div>
 
-                                <div>
-                                    <span className="text-sm font-light text-gray-700 mb-2 block">Theme Description</span>
-                                    <textarea
-                                        className="w-full h-32 rounded-lg border-2 border-gray-200 focus:border-black focus:ring-1 focus:ring-black p-4"
-                                        placeholder="Describe the theme or story of your lyrics..."
-                                        value={prompt}
-                                        onChange={(e) => setPrompt(e.target.value)}
-                                    />
+                                <div className="grid grid-cols-1 justify-items-center">
+                                    <div className="mb-1 w-[825px]">
+                                        <span className="text-sm font-light text-gray-700 mb-2 block">Theme Description</span>
+                                        <textarea
+                                            className="w-full h-32 rounded-lg border-2 border-gray-200 hover:border-gray-300 focus:border-black focus:ring-1 focus:ring-black p-4 shadow-sm transition-colors placeholder-gray-400 resize-none"
+                                            placeholder="Describe the theme or story of your lyrics..."
+                                            value={prompt}
+                                            onChange={(e) => setPrompt(e.target.value)}
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         )}
@@ -629,7 +629,35 @@ export default function Page() {
             </main>
 
             {/* 하단 고정 광고 */}
-            {!isSubscriber && <FixedBottomAd />}
+            {/* {!isSubscriber && <FixedBottomAd />} */}
+
+            {/* Generate 버튼 아래 광고 */}
+            {/* 
+            <div className="flex justify-center mt-8">
+                <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-4 border border-gray-100">
+                    <div className="h-[90px] bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center">
+                        <div className="text-gray-400 text-sm">
+                            Advertisement Area (728x90)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            */}
+
+            {/* Aside Advertisement */}
+            <aside className="w-[300px] hidden lg:block">
+                <div className="sticky top-8">
+                    {/* 
+                    <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-4 border border-gray-100">
+                        <div className="h-[600px] bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center">
+                            <div className="text-gray-400 text-sm">
+                                Advertisement Area (300x600)
+                            </div>
+                        </div>
+                    </div>
+                    */}
+                </div>
+            </aside>
         </div>
     );
 }
