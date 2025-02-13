@@ -162,7 +162,7 @@ export default function Page() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" data-oid="fu3ddcb">
                     <div className="flex justify-between h-16 items-center">
                         <span className="text-2xl font-light">
-                            harmonia.ai
+                            Prompt Ai Pro
                         </span>
                         <div className="flex space-x-8">
                             <a
@@ -629,35 +629,7 @@ export default function Page() {
             </main>
 
             {/* 하단 고정 광고 */}
-            {/* {!isSubscriber && <FixedBottomAd />} */}
-
-            {/* Generate 버튼 아래 광고 */}
-            {/* 
-            <div className="flex justify-center mt-8">
-                <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-4 border border-gray-100">
-                    <div className="h-[90px] bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center">
-                        <div className="text-gray-400 text-sm">
-                            Advertisement Area (728x90)
-                        </div>
-                    </div>
-                </div>
-            </div>
-            */}
-
-            {/* Aside Advertisement */}
-            <aside className="w-[300px] hidden lg:block">
-                <div className="sticky top-8">
-                    {/* 
-                    <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-4 border border-gray-100">
-                        <div className="h-[600px] bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center">
-                            <div className="text-gray-400 text-sm">
-                                Advertisement Area (300x600)
-                            </div>
-                        </div>
-                    </div>
-                    */}
-                </div>
-            </aside>
+            {!isSubscriber && <FixedBottomAd />}
         </div>
     );
 }

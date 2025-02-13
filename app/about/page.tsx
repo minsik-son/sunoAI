@@ -9,9 +9,7 @@ export default function AboutPage() {
             <nav className="border-b border-gray-100 bg-white/70 backdrop-blur-sm">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16 items-center">
-                        <Link href="/">
-                            <a className="text-2xl font-light">harmonia.ai</a>
-                        </Link>
+                        <Link href="/" className="text-2xl font-light">Prompt Ai Pro</Link>
                     </div>
                 </div>
             </nav>
@@ -19,7 +17,7 @@ export default function AboutPage() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <div className="flex gap-8">
                     <main className="flex-1 max-w-4xl">
-                        <h1 className="text-4xl font-light mb-8">How to Use harmonia.ai</h1>
+                        <h1 className="text-4xl font-light mb-8">How to Use Prompt Ai Pro</h1>
                         
                         <div className="space-y-8">
                             <section className="bg-white/70 backdrop-blur-sm rounded-2xl p-8 border border-gray-100">
@@ -73,10 +71,8 @@ export default function AboutPage() {
 
                         {/* Generate 버튼 */}
                         <div className="mt-12 flex justify-center">
-                            <Link href="/">
-                                <a className="px-8 py-3 bg-black text-white rounded-lg hover:bg-gray-900 transition-colors text-sm font-light">
-                                    Start Generating
-                                </a>
+                            <Link href="/" className="px-8 py-3 bg-black text-white rounded-lg hover:bg-gray-900 transition-colors text-sm font-light">
+                                Start Generating
                             </Link>
                         </div>
                         <p className="text-center text-gray-500 mt-4">
@@ -87,7 +83,6 @@ export default function AboutPage() {
                     {/* Aside Advertisement */}
                     <aside className="w-[300px] hidden lg:block">
                         <div className="sticky top-8">
-                            {/* 
                             <div className="bg-white/70 backdrop-blur-sm rounded-2xl p-4 border border-gray-100">
                                 <div className="h-[600px] bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center">
                                     <div className="text-gray-400 text-sm">
@@ -95,7 +90,6 @@ export default function AboutPage() {
                                     </div>
                                 </div>
                             </div>
-                            */}
                         </div>
                     </aside>
                 </div>
