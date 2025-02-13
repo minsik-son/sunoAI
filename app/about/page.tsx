@@ -1,6 +1,7 @@
 'use client';
 
 import InlineAd from '../components/ads/InlineAd';
+import Link from 'next/link';
 
 export default function AboutPage() {
     return (
@@ -8,9 +9,11 @@ export default function AboutPage() {
             <nav className="border-b border-gray-100 bg-white/70 backdrop-blur-sm">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16 items-center">
-                        <a href="/" className="text-2xl font-light">
-                            harmonia.ai
-                        </a>
+                        <Link href="/">
+                            <a className="text-2xl font-light">
+                                harmonia.ai
+                            </a>
+                        </Link>
                     </div>
                 </div>
             </nav>
@@ -73,15 +76,16 @@ export default function AboutPage() {
 
                         {/* Generate 버튼 */}
                         <div className="mt-12 flex justify-center">
-                            <a
-                                href="/"
-                                className="px-8 py-3 bg-black text-white rounded-lg hover:bg-gray-900 transition-colors text-sm font-light"
-                            >
-                                Start Generating
-                            </a>
+                            <Link href="/">
+                                <a
+                                    className="px-8 py-3 bg-black text-white rounded-lg hover:bg-gray-900 transition-colors text-sm font-light"
+                                >
+                                    Start Generating
+                                </a>
+                            </Link>
                         </div>
                         <p className="text-center text-gray-500 mt-4">
-                            If you find any bugs or have suggestions for improvements, please report them to <a href="mailto:aiprmpt@gmail.com" className="text-blue-500 underline">aiprmpt@gmail.com</a>.
+                            If you find any bugs or have suggestions for improvements, please report them to <Link href="mailto:aiprmpt@gmail.com" className="text-blue-500 underline">aiprmpt@gmail.com</Link>.
                         </p>
                     </main>
 
