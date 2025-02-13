@@ -6,8 +6,11 @@ const openai = new OpenAI({
 });
 
 export async function POST(request: Request) {
+    let keywords = '';  // keywords 변수를 try 블록 밖에서 선언
+    
     try {
-        const { keywords } = await request.json();
+        const data = await request.json();
+        keywords = data.keywords;  // keywords 값 할당
         const isLyrics = keywords.includes('[Language:') || keywords.includes('[Theme:');
 
         if (isLyrics) {
@@ -151,8 +154,8 @@ export async function POST(request: Request) {
         console.error('Error:', error);
         return NextResponse.json({ 
             variations: [{
-                title: 'Generated Content',
-                prompt: keywords
+                title: 'Error',
+                prompt: 'An error occurred while generating content.'  // 에러 메시지로 변경
             }]
         }, { status: 500 });
     }
