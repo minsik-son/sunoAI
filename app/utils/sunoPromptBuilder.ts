@@ -1,4 +1,5 @@
 import { PromptOptions, LyricsOptions } from './types';
+import axios from 'axios';
 
 export class SunoPromptBuilder {
     static buildStylePrompt(description: string, options: PromptOptions): string {
@@ -106,4 +107,9 @@ export class SunoPromptBuilder {
 
         return params;
     }
+}
+
+export async function generatePromptWithGPT(keywords: string): Promise<any> {
+    const response = await axios.post('/api/openai', { keywords });
+    return response.data.content;
 } 

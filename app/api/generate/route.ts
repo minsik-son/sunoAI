@@ -1,8 +1,9 @@
 import OpenAI from 'openai';
 import { NextResponse, NextRequest } from 'next/server';
 
+
 const openai = new OpenAI({
-    apiKey: process.env.NEXT_PUBLIC_SUNO_API_KEY
+    apiKey: process.env.OPENAI_API_KEY
 });
 
 export async function POST(request: NextRequest) {

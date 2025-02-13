@@ -101,6 +101,7 @@ export const METAPHOR_LEVELS = [
 ] as const;
 
 export const THEMES = [
+    'Custom',
     'Love & Romance',
     'Heartbreak & Loss',
     'Personal Growth',

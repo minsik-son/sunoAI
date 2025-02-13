@@ -57,25 +57,14 @@ export default function Page() {
         
         try {
             if (activeTab === 'lyrics') {
-                // 모든 lyrics 옵션을 포함하여 프롬프트 생성
                 const finalParams = {
                     ...lyricsOptions,
-                    theme: lyricsOptions.theme || prompt // theme이 없으면 prompt를 theme으로 사용
+                    theme: lyricsOptions.theme || prompt
                 };
 
                 const promptTemplate = SunoPromptBuilder.buildLyricsPrompt(finalParams);
-                
-                // GPT에 프롬프트 전달
                 const response = await SunoAPI.generatePromptWithGPT(promptTemplate);
-                const data = await response.json();
-                
-                // 생성된 가사에 메타 태그 추가
-                const variations = data.variations.map((item: { title: string; prompt: string }) => ({
-                    title: item.title,
-                    prompt: item.prompt
-                }));
-
-                setGeneratedPrompts(variations);
+                setGeneratedPrompts(response.variations);
             } else {
                 const inferredParams = SunoPromptBuilder.parseDescription(prompt);
                 const finalParams = {
@@ -91,8 +80,7 @@ export default function Page() {
                 
                 const keywords = SunoPromptBuilder.buildStylePrompt(prompt, finalParams);
                 const response = await SunoAPI.generatePromptWithGPT(keywords);
-                const data = await response.json();
-                setGeneratedPrompts(data.variations);
+                setGeneratedPrompts(response.variations);
             }
         } catch (error) {
             console.error('Generation failed:', error);
@@ -395,9 +383,21 @@ export default function Page() {
                                         >
                                             <option value="">Select Theme</option>
                                             {THEMES.map(theme => (
-                                                <option key={theme} value={theme}>{theme}</option>
+                                                <option key={theme} value={theme === 'Custom' ? 'Custom' : theme}>
+                                                    {theme}
+                                                </option>
                                             ))}
                                         </select>
+                                        {lyricsOptions.theme === 'Custom' && (
+                                            <div className="mt-2">
+                                                <textarea
+                                                    className="w-full h-32 rounded-lg border-2 border-gray-200 hover:border-gray-300 focus:border-black focus:ring-1 focus:ring-black p-4 shadow-sm transition-colors placeholder-gray-400 resize-none"
+                                                    placeholder="Describe the theme or story of your lyrics..."
+                                                    value={prompt}
+                                                    onChange={(e) => setPrompt(e.target.value)}
+                                                />
+                                            </div>
+                                        )}
                                     </div>
                                     <div>
                                         <span className="text-sm font-light text-gray-700 mb-2 block">
@@ -519,10 +519,11 @@ export default function Page() {
 
                                 <div className="grid grid-cols-1 justify-items-center">
                                     <div className="mb-1 w-[825px]">
-                                        <span className="text-sm font-light text-gray-700 mb-2 block">Theme Description</span>
+                                        <span className="text-sm font-light text-gray-700 mb-2 block">Additional Details</span>
                                         <textarea
                                             className="w-full h-32 rounded-lg border-2 border-gray-200 hover:border-gray-300 focus:border-black focus:ring-1 focus:ring-black p-4 shadow-sm transition-colors placeholder-gray-400 resize-none"
-                                            placeholder="Describe the theme or story of your lyrics..."
+                                            placeholder="Please describe any additional details you'd like to include..."
+
                                             value={prompt}
                                             onChange={(e) => setPrompt(e.target.value)}
                                         />

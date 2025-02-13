@@ -1,15 +1,13 @@
-import OpenAI from 'openai';
-
-const openai = new OpenAI({
-    apiKey: process.env.NEXT_PUBLIC_SUNO_API_KEY
-});
+import axios from 'axios';
 
 export class SunoAPI {
     static async generatePromptWithGPT(keywords: string): Promise<any> {
-        const response = await openai.chat.completions.create({
-            model: "gpt-3.5-turbo",
-            messages: [{ role: "user", content: keywords }],
-        });
-        return response.choices[0].message.content;
+        try {
+            const response = await axios.post('/api/openai', { keywords });
+            return response.data;
+        } catch (error) {
+            console.error('Error generating prompt:', error);
+            throw error;
+        }
     }
 } 
