@@ -10,9 +10,7 @@ export default function AboutPage() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between h-16 items-center">
                         <Link href="/">
-                            <a className="text-2xl font-light">
-                                harmonia.ai
-                            </a>
+                            <a className="text-2xl font-light">harmonia.ai</a>
                         </Link>
                     </div>
                 </div>
@@ -20,7 +18,6 @@ export default function AboutPage() {
 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <div className="flex gap-8">
-                    {/* Main Content */}
                     <main className="flex-1 max-w-4xl">
                         <h1 className="text-4xl font-light mb-8">How to Use harmonia.ai</h1>
                         
@@ -30,7 +27,7 @@ export default function AboutPage() {
                                 <div className="prose prose-gray">
                                     <p>The Song Generator helps you create music prompts with specific styles and characteristics:</p>
                                     <ol className="list-decimal list-inside space-y-2">
-                                        <li>Select the "Song Generator" tab</li>
+                                        <li>Select the &quot;Song Generator&quot; tab</li>
                                         <li>Describe your desired song in the text area</li>
                                         <li>Customize options like Genre, Instruments, Mood, etc.</li>
                                         <li>Click Generate to create your music prompt</li>
@@ -43,7 +40,7 @@ export default function AboutPage() {
                                 <div className="prose prose-gray">
                                     <p>The Lyrics Generator helps you create song lyrics in various languages and styles:</p>
                                     <ol className="list-decimal list-inside space-y-2">
-                                        <li>Select the "Lyrics Generator" tab</li>
+                                        <li>Select the &quot;Lyrics Generator&quot; tab</li>
                                         <li>Choose your preferred language</li>
                                         <li>Select a theme for your lyrics</li>
                                         <li>Customize additional options:
@@ -77,9 +74,7 @@ export default function AboutPage() {
                         {/* Generate 버튼 */}
                         <div className="mt-12 flex justify-center">
                             <Link href="/">
-                                <a
-                                    className="px-8 py-3 bg-black text-white rounded-lg hover:bg-gray-900 transition-colors text-sm font-light"
-                                >
+                                <a className="px-8 py-3 bg-black text-white rounded-lg hover:bg-gray-900 transition-colors text-sm font-light">
                                     Start Generating
                                 </a>
                             </Link>
