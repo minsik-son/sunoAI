@@ -85,7 +85,7 @@ export default function AboutPage() {
                             </Link>
                         </div>
                         <p className="text-center text-gray-500 mt-4">
-                            If you find any bugs or have suggestions for improvements, please report them to <Link href="mailto:aiprmpt@gmail.com" className="text-blue-500 underline">aiprmpt@gmail.com</Link>.
+                            If you find any bugs or have suggestions for improvements, please report them to &quot;aiprmpt@gmail.com&quot;.
                         </p>
                     </main>
 
