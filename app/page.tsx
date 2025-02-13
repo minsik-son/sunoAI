@@ -14,13 +14,6 @@ interface GeneratedItem {
     prompt: string;
 }
 
-// LyricsOptions 타입 정의
-interface LyricsOptions {
-    structure: string[]; // string[]로 설정
-    theme: string;
-    language: string;
-}
-
 export default function Page() {
     const [activeTab, setActiveTab] = useState('song');
     const [prompt, setPrompt] = useState('');
