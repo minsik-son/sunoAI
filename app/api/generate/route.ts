@@ -1,11 +1,11 @@
 import OpenAI from 'openai';
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 
 const openai = new OpenAI({
     apiKey: process.env.NEXT_PUBLIC_SUNO_API_KEY
 });
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
     let keywords = '';  // keywords 변수를 try 블록 밖에서 선언
     
     try {
@@ -153,10 +153,8 @@ export async function POST(request: Request) {
     } catch (error) {
         console.error('Error:', error);
         return NextResponse.json({ 
-            variations: [{
-                title: 'Error',
-                prompt: 'An error occurred while generating content.'  // 에러 메시지로 변경
-            }]
+            error: 'An error occurred',
+            message: error instanceof Error ? error.message : 'Unknown error'
         }, { status: 500 });
     }
 } 

@@ -7,6 +7,7 @@ import { SunoPromptBuilder } from './utils/sunoPromptBuilder';
 import type { PromptOptions, LyricsOptions } from './utils/types';
 import InlineAd from './components/ads/InlineAd';
 import FixedBottomAd from './components/ads/FixedBottomAd';
+import Image from 'next/image';
 
 // 타입 정의 추가
 interface GeneratedItem {
