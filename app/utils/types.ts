@@ -10,7 +10,7 @@ export interface PromptOptions {
 }
 
 export interface LyricsOptions {
-    structure: string | string[];
+    structure: string[];
     theme: string;
     language: string;
     vocalStyle?: string;
