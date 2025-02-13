@@ -96,7 +96,7 @@ export async function POST(request: Request) {
                 return NextResponse.json({ 
                     variations: [{
                         title: 'Generated Content',
-                        prompt: keywords
+                        prompt: 'No lyrics generated due to an error.' // keywords 대신 적절한 메시지로 수정
                     }]
                 }, { status: 500 });
             }
@@ -125,9 +125,9 @@ export async function POST(request: Request) {
                     Each prompt should be unique and incorporate the given elements in different ways.`
                 }, {
                     role: "user",
-                    content: `Create 5 music prompts using these elements: ${keywords}`
+                    content: `Create 5 music prompts using these elements: ${keywords}` // keywords 사용
                 }],
-                max_tokens: 1000,  // 토큰 수 증가
+                max_tokens: 1000,
                 temperature: 0.8
             });
 
