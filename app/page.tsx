@@ -70,7 +70,7 @@ export default function Page() {
                 const data = await response.json();
                 
                 // 생성된 가사에 메타 태그 추가
-                const variations = data.variations.map(item => ({
+                const variations = data.variations.map((item: { title: string; prompt: string }) => ({
                     title: item.title,
                     prompt: item.prompt
                 }));
@@ -385,7 +385,9 @@ export default function Page() {
                             <div className="space-y-6">
                                 <div className="grid grid-cols-2 gap-x-4 justify-items-center">
                                     <div>
-                                        <span className="text-sm font-light text-gray-700 mb-2 block">Theme</span>
+                                        <span className="text-sm font-light text-gray-700 mb-2 block">
+                                            Theme <span className="text-red-500">*</span>
+                                        </span>
                                         <select
                                             className={lyricsSelectClass}
                                             onChange={(e) => handleLyricsOptionChange('theme', e.target.value)}
@@ -398,7 +400,9 @@ export default function Page() {
                                         </select>
                                     </div>
                                     <div>
-                                        <span className="text-sm font-light text-gray-700 mb-2 block">Language</span>
+                                        <span className="text-sm font-light text-gray-700 mb-2 block">
+                                            Language <span className="text-red-500">*</span>
+                                        </span>
                                         <select
                                             className={lyricsSelectClass}
                                             onChange={(e) => handleLyricsOptionChange('language', e.target.value)}
