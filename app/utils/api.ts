@@ -5,11 +5,11 @@ const openai = new OpenAI({
 });
 
 export class SunoAPI {
-    static async generatePromptWithGPT(keywords: string): Promise<Response> {
+    static async generatePromptWithGPT(keywords: string): Promise<any> {
         const response = await openai.chat.completions.create({
             model: "gpt-3.5-turbo",
             messages: [{ role: "user", content: keywords }],
         });
-        return response.data;
+        return response.choices[0].message.content;
     }
 } 
