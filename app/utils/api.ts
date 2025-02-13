@@ -1,24 +1,15 @@
-import { Configuration, OpenAIApi } from 'openai';
+import OpenAI, { OpenAIApi } from 'openai';
+
+const openai = new OpenAIApi({
+    apiKey: process.env.NEXT_PUBLIC_SUNO_API_KEY
+});
 
 export class SunoAPI {
     static async generatePromptWithGPT(keywords: string): Promise<Response> {
-        try {
-            const response = await fetch('/api/generate', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ keywords })
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to generate prompt');
-            }
-
-            return response;
-        } catch (error) {
-            console.error('GPT prompt generation failed:', error);
-            throw error;
-        }
+        const response = await openai.createChatCompletion({
+            model: "gpt-3.5-turbo",
+            messages: [{ role: "user", content: keywords }],
+        });
+        return response.data;
     }
 } 
