@@ -84,5 +84,38 @@
   }
   body {
     @apply bg-background text-foreground;
+    overflow-x: hidden;
+  }
+}
+
+@media (max-width: 768px) {
+  .max-w-7xl {
+    @apply px-4;
+  }
+
+  .select-container {
+    @apply w-full flex flex-col items-start !important;
+  }
+
+  .select-container select,
+  .song-select,
+  .lyrics-select {
+    @apply w-[280px] !important;
+    min-width: 280px !important;
+    max-width: 280px !important;
+  }
+
+  .select-container {
+    @apply flex items-start justify-start !important;
+    padding-left: calc((100% - 280px) / 2) !important;
+    padding-right: calc((100% - 280px) / 2) !important;
+  }
+
+  textarea {
+    @apply w-full !important;
+  }
+
+  h1 {
+    @apply text-3xl !important;
   }
 }

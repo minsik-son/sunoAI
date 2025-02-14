@@ -7,10 +7,9 @@ const openai = new OpenAI({
 
 export async function POST(req: Request) {
     try {
-        const { keywords } = await req.json();
-        const isLyrics = keywords.includes('[Language:') || keywords.includes('[Theme:');
+        const { keywords, type } = await req.json();
 
-        if (isLyrics) {
+        if (type === 'lyrics') {
             // Lyrics Generator 처리
             const systemPrompt = `You are a professional lyrics generator. Create lyrics based on the given parameters.
             
@@ -72,7 +71,7 @@ export async function POST(req: Request) {
             });
 
         } else {
-            // Song Generator 처리 (기존 코드)
+            // Song Generator 처리
             const systemPrompt = `You are a music prompt generator. Create 5 different variations of music prompts based on the given description and elements. Each variation should include a creative title and a detailed prompt.
 
             Format your response exactly as:
@@ -84,7 +83,8 @@ export async function POST(req: Request) {
 
             (continue for all 5 variations)
 
-            Make each prompt unique and incorporate the given elements in different creative ways.`;
+            Make each prompt unique and incorporate the given elements in different creative ways.
+            IMPORTANT: Each prompt must be under 200 characters total.`;
 
             const response = await openai.chat.completions.create({
                 model: "gpt-3.5-turbo",

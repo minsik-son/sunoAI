@@ -2,83 +2,71 @@ import { PromptOptions, LyricsOptions } from './types';
 import axios from 'axios';
 
 export class SunoPromptBuilder {
-    static buildStylePrompt(description: string, options: PromptOptions): string {
-        const parts: string[] = [];
+    static buildStylePrompt(description: string, params: PromptOptions): string {
+        const promptParts = [];
         
-        // [Describe] - 사용자의 설명을 첫 번째로
-        if (description) {
-            parts.push(description);
-        }
-
-        // [Genre]
-        if (options.genre) {
-            parts.push(options.genre);
-        }
-
-        // [Tempo]
-        if (options.tempo) {
-            const bpm = options.tempo.match(/\((.*?)\)/)?.[1] || options.tempo;
-            parts.push(bpm);
-        }
-
-        // [Mood]
-        if (options.mood) {
-            parts.push(options.mood);
-        }
-
-        // [Instruments]
-        if (options.instruments) {
-            parts.push(options.instruments);
-        }
-
-        // [Vocal Type]
-        if (options.vocalType) {
-            parts.push(options.vocalType);
-        }
-
-        // [Sound Effects]
-        if (options.soundEffects) {
-            parts.push(options.soundEffects);
-        }
-
-        // 200자 제한 확인 및 처리
-        let result = parts.join(', ');
-        if (result.length > 200) {
-            // 중요도가 낮은 요소부터 제거
-            const importantParts = [description, options.genre, options.tempo, options.mood];
-            result = importantParts.filter(Boolean).join(', ');
-            
-            // 여전히 200자를 초과하면 설명 부분을 줄임
-            if (result.length > 200) {
-                result = result.slice(0, 197) + '...';
+        // 핵심 요소 먼저 추가
+        if (params.genre) promptParts.push(params.genre);
+        if (params.mood) promptParts.push(`${params.mood} mood`);
+        if (params.instruments) promptParts.push(`featuring ${params.instruments}`);
+        
+        // 기본 프롬프트 구성
+        let basePrompt = `Create ${promptParts.join(', ')}`;
+        
+        // 남은 공간 계산 (200자 제한)
+        const remainingLength = 200 - basePrompt.length;
+        
+        // 추가 세부사항을 중요도 순으로 추가
+        if (remainingLength > 0 && params.tempo) {
+            const tempoText = ` at ${params.tempo}`;
+            if (basePrompt.length + tempoText.length <= 200) {
+                basePrompt += tempoText;
             }
         }
-
-        return result;
+        
+        if (remainingLength > 0 && params.vocalType) {
+            const vocalText = `. Include ${params.vocalType} vocals`;
+            if (basePrompt.length + vocalText.length <= 200) {
+                basePrompt += vocalText;
+            }
+        }
+        
+        // 사용자 설명을 마지막에 추가
+        if (description && basePrompt.length < 190) {
+            const maxDescLength = 200 - basePrompt.length - 2;
+            if (maxDescLength > 0) {
+                basePrompt += `. ${description.slice(0, maxDescLength)}`;
+            }
+        }
+        
+        return basePrompt;
     }
 
     static buildLyricsPrompt(params: LyricsOptions): string {
-        const metaTags: string[] = [];
+        let prompt = `Write ${params.language} lyrics`;
         
-        // 기본 메타 태그 추가
-        if (params.language) metaTags.push(`[Language: ${params.language}]`);
-        if (params.theme) metaTags.push(`[Theme: ${params.theme}]`);
-        if (params.vocalStyle) metaTags.push(`[Vocal: ${params.vocalStyle}]`);
-        if (params.style) metaTags.push(`[Style: ${params.style}]`);
-        if (params.songLength) metaTags.push(`[Length: ${params.songLength}]`);
+        // 테마 추가 (필수 요소)
+        if (params.theme) {
+            prompt += ` about ${params.theme}`;
+        }
         
-        // 구조 관련 태그
-        if (params.structure) metaTags.push(`[Structure: ${params.structure}]`);
-        if (params.repetition) metaTags.push(`[Repetition: ${params.repetition}]`);
+        // 중요도 순으로 옵션 추가
+        const options = [];
+        if (params.style) options.push(`style: ${params.style}`);
+        if (params.vocalStyle) options.push(`vocal style: ${params.vocalStyle}`);
+        if (params.rhymePattern) options.push(`rhyme: ${params.rhymePattern}`);
         
-        // 세부 스타일 태그
-        if (params.rhymePattern) metaTags.push(`[Rhyme: ${params.rhymePattern}]`);
-        if (params.metaphorLevel) metaTags.push(`[Metaphor: ${params.metaphorLevel}]`);
-
-        // 메타 태그를 한 줄로 결합
-        const metaTagsString = metaTags.join(' ');
-
-        return metaTagsString;
+        // 옵션을 하나씩 추가하면서 길이 체크
+        for (const option of options) {
+            const newPrompt = `${prompt}. ${option}`;
+            if (newPrompt.length <= 200) {
+                prompt = newPrompt;
+            } else {
+                break;
+            }
+        }
+        
+        return prompt;
     }
 
     static parseDescription(description: string): Partial<PromptOptions> {

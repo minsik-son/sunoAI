@@ -15,6 +15,20 @@ interface GeneratedItem {
     prompt: string;
 }
 
+// 모바일 전용 selectClass
+const mobileSelectClass = `mt-1 block w-full rounded-lg border-2 border-gray-200 bg-white shadow-sm 
+focus:border-black focus:ring-1 focus:ring-black transition-colors cursor-pointer
+[&>*]:py-2 [&>*]:px-4 [&>*]:bg-white hover:[&>*]:bg-gray-50/50 !important`;
+
+// Song Generator와 Lyrics Generator의 selectClass를 분리
+const songSelectClass = `mt-1 block rounded-lg border-2 border-gray-200 bg-white shadow-sm 
+focus:border-black focus:ring-1 focus:ring-black transition-colors cursor-pointer
+[&>*]:py-2 [&>*]:px-4 [&>*]:bg-white hover:[&>*]:bg-gray-50/50 song-select md:w-[250px]`;
+
+const lyricsSelectClass = `mt-1 block rounded-lg border-2 border-gray-200 bg-white shadow-sm 
+focus:border-black focus:ring-1 focus:ring-black transition-colors cursor-pointer
+[&>*]:py-2 [&>*]:px-4 [&>*]:bg-white hover:[&>*]:bg-gray-50/50 lyrics-select md:w-[250px]`;
+
 export default function Page() {
     const [activeTab, setActiveTab] = useState('song');
     const [prompt, setPrompt] = useState('');
@@ -29,6 +43,7 @@ export default function Page() {
     const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
     const [isSubscriber, setIsSubscriber] = useState(false);  // 구독 상태 추가
     const [customThemePrompt, setCustomThemePrompt] = useState(''); // Custom theme 상태 추가
+    const [promptLength, setPromptLength] = useState(0);
 
     const handleOptionChange = (key: keyof PromptOptions, value: string | string[]) => {
         setOptions(prev => ({
@@ -64,7 +79,7 @@ export default function Page() {
                 };
 
                 const promptTemplate = SunoPromptBuilder.buildLyricsPrompt(finalParams);
-                const response = await SunoAPI.generatePromptWithGPT(promptTemplate);
+                const response = await SunoAPI.generatePromptWithGPT(promptTemplate, 'lyrics');
                 setGeneratedPrompts(response.variations);
             } else {
                 const inferredParams = SunoPromptBuilder.parseDescription(prompt);
@@ -80,7 +95,7 @@ export default function Page() {
                 };
                 
                 const keywords = SunoPromptBuilder.buildStylePrompt(prompt, finalParams);
-                const response = await SunoAPI.generatePromptWithGPT(keywords);
+                const response = await SunoAPI.generatePromptWithGPT(keywords, 'song');
                 setGeneratedPrompts(response.variations);
             }
         } catch (error) {
@@ -91,15 +106,13 @@ export default function Page() {
         }
     };
 
-    // Song Generator용 selectClass - 더 짧은 너비
-    const songSelectClass = `mt-1 block w-[300px] rounded-lg border-2 border-gray-200 bg-white shadow-sm 
-    focus:border-black focus:ring-1 focus:ring-black transition-colors cursor-pointer
-    [&>*]:py-2 [&>*]:px-4 [&>*]:bg-white hover:[&>*]:bg-gray-50/50`;
-
-    // Lyrics Generator용 selectClass - 기존 너비 유지
-    const lyricsSelectClass = `mt-1 block w-[400px] rounded-lg border-2 border-gray-200 bg-white shadow-sm 
-    focus:border-black focus:ring-1 focus:ring-black transition-colors cursor-pointer
-    [&>*]:py-2 [&>*]:px-4 [&>*]:bg-white hover:[&>*]:bg-gray-50/50`;
+    const handlePromptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        const text = e.target.value;
+        if (text.length <= 200) {
+            setPrompt(text);
+            setPromptLength(text.length);
+        }
+    };
 
     // 복사 함수 수정
     const copyToClipboard = async (text: string, index: number) => {
@@ -146,7 +159,7 @@ export default function Page() {
             data-oid="h_2hx8:"
         >
             <nav
-                className="border-b border-gray-100 bg-white/70 backdrop-blur-sm"
+                className="border-b border-gray-100 bg-white/70 backdrop-blur-sm px-4"
                 data-oid=":-3qkmv"
             >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" data-oid="fu3ddcb">
@@ -166,7 +179,7 @@ export default function Page() {
                 </div>
             </nav>
 
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 pb-[120px]">
+            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 pb-[120px]">
                 <h1 className="text-5xl font-light text-center mb-4" data-oid="h5azvzr">
                     Create Suno Prompts with AI
                 </h1>
@@ -199,9 +212,13 @@ export default function Page() {
                             className="w-full h-32 rounded-xl border-2 border-gray-200 hover:border-gray-300 focus:border-black focus:ring-1 focus:ring-black text-lg p-4 shadow-sm transition-all duration-200 placeholder-gray-400 resize-none"
                             placeholder="✨ Describe the song you want to create..."
                             value={prompt}
-                            onChange={(e) => setPrompt(e.target.value)}
+                            onChange={handlePromptChange}
+                            maxLength={200}
                             data-oid="ynellg8"
                         />
+                        <div className="text-sm text-gray-500 mt-2 text-right">
+                            {promptLength}/200 characters
+                        </div>
                         <p className="text-sm text-gray-500 mt-4 text-center">
                             Please describe your desired song or make a simple selection from the dropdown below.
                         </p>
@@ -215,8 +232,8 @@ export default function Page() {
                     <div className="space-y-6" data-oid="l82mya2">
                         {activeTab === 'song' && (
                             <div className="max-w-3xl mx-auto">
-                                <div className="grid grid-cols-2 gap-x-8 justify-items-center">
-                                    <div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-x-8">
+                                    <div className="select-container">
                                         <span className="text-sm font-light text-gray-700">Genre</span>
                                         <select
                                             className={songSelectClass}
@@ -263,7 +280,7 @@ export default function Page() {
                                             <option value="Christmas">Christmas</option>
                                         </select>
                                     </div>
-                                    <div>
+                                    <div className="select-container">
                                         <span className="text-sm font-light text-gray-700">Instruments</span>
                                         <select
                                             className={songSelectClass}
@@ -285,7 +302,7 @@ export default function Page() {
                                             <option value="Percussion">Percussion</option>
                                         </select>
                                     </div>
-                                    <div>
+                                    <div className="select-container">
                                         <span className="text-sm font-light text-gray-700">Mood</span>
                                         <select
                                             className={songSelectClass}
@@ -306,7 +323,7 @@ export default function Page() {
                                             <option value="Vibrant">Vibrant</option>
                                         </select>
                                     </div>
-                                    <div>
+                                    <div className="select-container">
                                         <span className="text-sm font-light text-gray-700">Tempo</span>
                                         <select
                                             className={songSelectClass}
@@ -327,7 +344,7 @@ export default function Page() {
                                             <option value="Presto (168-200 BPM)">Presto (168-200 BPM)</option>
                                         </select>
                                     </div>
-                                    <div>
+                                    <div className="select-container">
                                         <span className="text-sm font-light text-gray-700">Vocal Type</span>
                                         <select
                                             className={songSelectClass}
@@ -347,7 +364,7 @@ export default function Page() {
                                             <option value="Giggling">Giggling</option>
                                         </select>
                                     </div>
-                                    <div>
+                                    <div className="select-container">
                                         <span className="text-sm font-light text-gray-700">Sound Effects</span>
                                         <select
                                             className={songSelectClass}
@@ -372,8 +389,8 @@ export default function Page() {
 
                         {activeTab === 'lyrics' && (
                             <div className="space-y-6">
-                                <div className="grid grid-cols-2 gap-x-4 justify-items-center">
-                                    <div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-x-4 justify-items-center">
+                                    <div className="select-container">
                                         <span className="text-sm font-light text-gray-700 mb-2 block">
                                             Theme <span className="text-red-500">*</span>
                                         </span>
@@ -400,7 +417,7 @@ export default function Page() {
                                             </div>
                                         )}
                                     </div>
-                                    <div>
+                                    <div className="select-container">
                                         <span className="text-sm font-light text-gray-700 mb-2 block">
                                             Language <span className="text-red-500">*</span>
                                         </span>
@@ -518,8 +535,8 @@ export default function Page() {
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-1 justify-items-center">
-                                    <div className="mb-1 w-[825px]">
+                                <div className="flex justify-center mb-1 w-full">
+                                    <div className="w-full md:w-[825px]">
                                         <span className="text-sm font-light text-gray-700 mb-2 block">Additional Details</span>
                                         <textarea
                                             className="w-full h-32 rounded-lg border-2 border-gray-200 hover:border-gray-300 focus:border-black focus:ring-1 focus:ring-black p-4 shadow-sm transition-colors placeholder-gray-400 resize-none"
