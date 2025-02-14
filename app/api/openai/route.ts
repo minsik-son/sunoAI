@@ -15,9 +15,9 @@ export async function POST(req: Request) {
             const systemPrompt = `You are a professional lyrics generator. Create lyrics based on the given parameters.
             
             Rules:
-            1. Follow the exact structure provided in the input
-            2. Match the specified language and theme
-            3. Maintain consistent style and tone
+            1. Follow the exact structure provided in the input.
+            2. Match the specified language and theme.
+            3. Maintain consistent style and tone.
             4. If no structure is provided, use this default structure:
                - [Verse 1]
                - [Chorus]
@@ -25,8 +25,13 @@ export async function POST(req: Request) {
                - [Chorus]
                - [Bridge]
                - [Chorus]
-            5. Consider the specified rhyme pattern and metaphor level
-            6. Format the output as:
+            5. Consider the specified rhyme pattern and metaphor level.
+            6. Use rich meta tags to enhance the lyrics, such as:
+               - [Genre: Pop]
+               - [Mood: Uplifting]
+               - [Theme: Love]
+               - [Language: English]
+            7. Format the output as:
                TITLE: [Creative song title]
                
                [Section name]
@@ -53,7 +58,7 @@ export async function POST(req: Request) {
                     }
                 ],
                 temperature: 0.8,
-                max_tokens: 2000  // 토큰 수 증가
+                max_tokens: 2000
             });
 
             const content = response.choices[0].message.content || '';

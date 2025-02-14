@@ -28,6 +28,7 @@ export default function Page() {
     });
     const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
     const [isSubscriber, setIsSubscriber] = useState(false);  // 구독 상태 추가
+    const [customThemePrompt, setCustomThemePrompt] = useState(''); // Custom theme 상태 추가
 
     const handleOptionChange = (key: keyof PromptOptions, value: string | string[]) => {
         setOptions(prev => ({
@@ -59,7 +60,7 @@ export default function Page() {
             if (activeTab === 'lyrics') {
                 const finalParams = {
                     ...lyricsOptions,
-                    theme: lyricsOptions.theme || prompt
+                    theme: lyricsOptions.theme === 'Custom' ? customThemePrompt : lyricsOptions.theme || prompt
                 };
 
                 const promptTemplate = SunoPromptBuilder.buildLyricsPrompt(finalParams);
@@ -393,8 +394,8 @@ export default function Page() {
                                                 <textarea
                                                     className="w-full h-32 rounded-lg border-2 border-gray-200 hover:border-gray-300 focus:border-black focus:ring-1 focus:ring-black p-4 shadow-sm transition-colors placeholder-gray-400 resize-none"
                                                     placeholder="Describe the theme or story of your lyrics..."
-                                                    value={prompt}
-                                                    onChange={(e) => setPrompt(e.target.value)}
+                                                    value={customThemePrompt}
+                                                    onChange={(e) => setCustomThemePrompt(e.target.value)}
                                                 />
                                             </div>
                                         )}
@@ -523,7 +524,6 @@ export default function Page() {
                                         <textarea
                                             className="w-full h-32 rounded-lg border-2 border-gray-200 hover:border-gray-300 focus:border-black focus:ring-1 focus:ring-black p-4 shadow-sm transition-colors placeholder-gray-400 resize-none"
                                             placeholder="Please describe any additional details you'd like to include..."
-
                                             value={prompt}
                                             onChange={(e) => setPrompt(e.target.value)}
                                         />
