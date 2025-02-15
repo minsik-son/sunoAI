@@ -9,16 +9,35 @@ const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
     title: 'Prompt Ai Pro - Best AI Prompt Generator',
-    description: 'Create AI prompts effortlessly with Prompt Ai Pro. Generate high-quality prompts for ChatGPT, Midjourney, and more.',
+    description: 'Create professional AI-generated music and lyrics with Prompt AI Pro. Our advanced AI technology helps you generate high-quality song prompts and creative lyrics in multiple languages.',
+    keywords: 'AI Music Generator, Lyrics Generator, Music Prompts, AI Songwriting, Creative Writing AI',
+    openGraph: {
+        url: 'https://www.promptaipro.com',
+        type: 'website',
+        images: [
+            {
+                url: 'https://www.promptaipro.com/images/2d-logo--side-view-of-the-brain.png',
+                width: 1200,
+                height: 630,
+                alt: 'Prompt AI Pro - AI Music & Lyrics Generator'
+            }
+        ],
+    }
+};
+
+/*
+export const metadata: Metadata = {
+    title: 'Prompt Ai Pro - Best AI Prompt Generator',
+    description: 'Create AI prompts effortlessly with Prompt Ai Pro. Generate high-quality prompts for ai music, lyrics ai',
     keywords: 'AI Prompt Generator, ChatGPT prompts, AI writing assistant, best AI prompts',
     openGraph: {
         title: 'Prompt Ai Pro - Best AI Prompt Generator',
         description: 'Create AI prompts effortlessly with Prompt Ai Pro.',
-        url: 'https://suno-ai-lac.vercel.app', // 실제 도메인으로 변경
+        url: 'https://www.promptaipro.com', // 실제 도메인으로 변경
         type: 'website',
         images: [
             {
-                url: 'https://suno-ai-lac.vercel.app/@2d-logo--side-view-of-the-brain.png', // 로고 이미지 URL
+                url: 'https://www.promptaipro.com/images/2d-logo--side-view-of-the-brain.png', // 로고 이미지 URL
                 width: 1200,
                 height: 630,
                 alt: 'Prompt Ai Pro Thumbnail'
@@ -26,7 +45,7 @@ export const metadata: Metadata = {
         ],
     }
 };
-
+*/
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
     return (
         <html lang="en">
@@ -47,7 +66,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
                 <meta name="robots" content="index, follow" />
                 
                 {/* 로고 설정 */}
-                <link rel="icon" href="/images/@2d-logo--side-view-of-the-brain.png" />
+                <link rel="icon" href="/images/2d-logo--side-view-of-the-brain.png" />
             </head>
             <body className={inter.className}>
                 {children}

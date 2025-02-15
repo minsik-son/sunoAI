@@ -2,18 +2,12 @@
 
 import InlineAd from '../components/ads/InlineAd';
 import Link from 'next/link';
+import Header from '../components/Header';
 
 export default function AboutPage() {
     return (
         <div className="min-h-screen bg-[#f8f9ff] text-gray-900">
-            <nav className="border-b border-gray-100 bg-white/70 backdrop-blur-sm">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between h-16 items-center">
-                        <Link href="/" className="text-2xl font-light">Prompt Ai Pro</Link>
-                    </div>
-                </div>
-            </nav>
-
+            <Header />
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <div className="flex gap-8">
                     <main className="flex-1 max-w-4xl">

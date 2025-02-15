@@ -8,6 +8,8 @@ import type { PromptOptions, LyricsOptions } from './utils/types';
 import InlineAd from './components/ads/InlineAd';
 import FixedBottomAd from './components/ads/FixedBottomAd';
 import Image from 'next/image';
+import { Metadata } from 'next';
+import Header from './components/Header';
 
 // 타입 정의 추가
 interface GeneratedItem {
@@ -154,31 +156,8 @@ export default function Page() {
     }`;
 
     return (
-        <div
-            className="min-h-screen bg-[#f8f9ff] text-gray-900"
-            data-oid="h_2hx8:"
-        >
-            <nav
-                className="border-b border-gray-100 bg-white/70 backdrop-blur-sm px-4"
-                data-oid=":-3qkmv"
-            >
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" data-oid="fu3ddcb">
-                    <div className="flex justify-between h-16 items-center">
-                        <span className="text-2xl font-light">
-                            Prompt Ai Pro
-                        </span>
-                        <div className="flex space-x-8">
-                            <a
-                                href="/about"
-                                className="text-sm font-light hover:text-gray-600 transition-colors"
-                            >
-                                About
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </nav>
-
+        <div className="min-h-screen bg-[#f8f9ff] text-gray-900">
+            <Header />
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 pb-[120px]">
                 <h1 className="text-5xl font-light text-center mb-4" data-oid="h5azvzr">
                     Create Suno Prompts with AI
@@ -614,38 +593,43 @@ export default function Page() {
                     </div>
                 ) : (
                     generatedPrompts.length > 0 && (
-                        <div className="max-w-3xl mx-auto mb-12 bg-white/70 backdrop-blur-sm rounded-2xl p-8 border border-gray-100 space-y-6">
-                            {generatedPrompts.map((item, index) => (
-                                <div key={index} className={index > 0 ? "pt-6 border-t border-gray-100" : ""}>
-                                    <div className="flex items-center justify-between mb-4">
-                                        <h3 className="text-xl font-light">
-                                            {item.title}
-                                        </h3>
-                                        <button
-                                            onClick={() => copyToClipboard(item.prompt, index)}
-                                            className={`p-2 rounded-lg transition-all duration-200 ${
-                                                copiedIndex === index 
-                                                    ? 'bg-black text-white' 
-                                                    : 'hover:bg-gray-100'
-                                            }`}
-                                            title="Copy to clipboard"
-                                        >
-                                            {copiedIndex === index ? (
-                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                                                </svg>
-                                            ) : (
-                                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
-                                                </svg>
-                                            )}
-                                        </button>
+                        <div
+                            className="max-w-3xl mx-auto bg-[#FFF9F1] rounded-2xl p-8 shadow-sm mb-12 border border-gray-100"
+                            data-oid="results-container"
+                        >
+                            <div className="space-y-6">
+                                {generatedPrompts.map((item, index) => (
+                                    <div key={index} className={index > 0 ? "pt-6 border-t border-gray-100" : ""}>
+                                        <div className="flex items-center justify-between mb-4">
+                                            <h3 className="text-xl font-light">
+                                                {item.title}
+                                            </h3>
+                                            <button
+                                                onClick={() => copyToClipboard(item.prompt, index)}
+                                                className={`p-2 rounded-lg transition-all duration-200 ${
+                                                    copiedIndex === index 
+                                                        ? 'bg-black text-white' 
+                                                        : 'hover:bg-gray-100'
+                                                }`}
+                                                title="Copy to clipboard"
+                                            >
+                                                {copiedIndex === index ? (
+                                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                                                    </svg>
+                                                ) : (
+                                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                                                    </svg>
+                                                )}
+                                            </button>
+                                        </div>
+                                        <p className="text-gray-700" dangerouslySetInnerHTML={{ 
+                                            __html: item.prompt.replace(/\n/g, '<br>') 
+                                        }} />
                                     </div>
-                                    <p className="text-gray-700" dangerouslySetInnerHTML={{ 
-                                        __html: item.prompt.replace(/\n/g, '<br>') 
-                                    }} />
-                                </div>
-                            ))}
+                                ))}
+                            </div>
                         </div>
                     )
                 )}
@@ -656,3 +640,5 @@ export default function Page() {
         </div>
     );
 }
+
+
