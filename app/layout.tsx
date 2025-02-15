@@ -51,16 +51,11 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <html lang="en">
             <head>
                 {/* Google AdSense 최적화: defer 사용 */}
-                <Script 
-                    strategy="lazyOnload"
-                    async 
-                    defer
-                    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9921649727270589"
-                    crossOrigin="anonymous"
-                />
+                <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9921649727270589"
+                        crossOrigin="anonymous"></script>
                 
                 {/* Canonical URL 추가 */}
-                <link rel="canonical" href="https://suno-ai-lac.vercel.app" />
+                <link rel="canonical" href="https://promptaipro.com" />
 
                 {/* 검색 엔진 크롤링 허용 */}
                 <meta name="robots" content="index, follow" />

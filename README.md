@@ -1,7 +1,7 @@
 # Onlook Starter Template
 
 <p align="center">
-  <img src="app/favicon.ico" />
+  <img src="public/images/2d-logo--side-view-of-the-brain.png" />
 </p>
 
 This is an [Onlook](https://onlook.dev/) project set up with [Next.js](https://nextjs.org/), [TailwindCSS](https://tailwindcss.com/) and [ShadCN](https://ui.shadcn.com).
